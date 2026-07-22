@@ -123,103 +123,67 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       PRELOADER INTRO CARD & CINEMATIC VIDEO / VOICE CONTROLLER
+       PRELOADER INTRO CARD & CINEMATIC NATIVE VIDEO AUDIO CONTROLLER
        ========================================================================== */
     const introOverlay = document.getElementById('intro-overlay');
     const heroVoiceToggle = document.getElementById('hero-voice-toggle');
     const heroVoiceIcon = document.getElementById('hero-voice-icon');
     const heroIntroVideo = document.getElementById('hero-intro-video');
     
-    let isSpeaking = false;
+    let isPlaying = false;
     
-    const selfIntroText = "Hi, I'm Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
-    
-    // Select Male Voice
-    const getMaleVoice = () => {
-        if (!('speechSynthesis' in window)) return null;
-        const voices = window.speechSynthesis.getVoices();
-        if (!voices || voices.length === 0) return null;
-        
-        const maleKeywords = ['david', 'male', 'mark', 'george', 'alex', 'rishi', 'james', 'daniel', 'guy', 'steffan', 'google us english', 'microsoft david'];
-        for (const keyword of maleKeywords) {
-            const found = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes(keyword));
-            if (found) return found;
+    const stopVideoAudio = () => {
+        if (heroIntroVideo) {
+            heroIntroVideo.pause();
         }
-        
-        const fallbackMale = voices.find(v => v.name.toLowerCase().includes('male'));
-        if (fallbackMale) return fallbackMale;
-        
-        return voices.find(v => v.lang.startsWith('en')) || voices[0];
-    };
-    
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = () => {
-            getMaleVoice();
-        };
-    }
-    
-    const stopIntroSpeech = () => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-        isSpeaking = false;
+        isPlaying = false;
         if (heroVoiceIcon) {
             heroVoiceIcon.classList.remove('fa-pause');
             heroVoiceIcon.classList.add('fa-play');
         }
-        if (heroIntroVideo) {
-            heroIntroVideo.pause();
-        }
     };
     
-    const startIntroSpeech = () => {
-        if (isSpeaking) {
-            stopIntroSpeech();
-            return;
-        }
+    const startVideoAudio = () => {
+        if (!heroIntroVideo) return;
         
-        stopIntroSpeech();
-        isSpeaking = true;
+        isPlaying = true;
+        heroIntroVideo.muted = false; // Enable video's built-in audio!
+        heroIntroVideo.volume = 1.0;
         
         if (heroVoiceIcon) {
             heroVoiceIcon.classList.remove('fa-play');
             heroVoiceIcon.classList.add('fa-pause');
         }
         
-        if (heroIntroVideo) {
-            heroIntroVideo.currentTime = 0;
-            heroIntroVideo.play().catch(() => {});
-        }
-        
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(selfIntroText);
-            utterance.rate = 1.0;
-            utterance.pitch = 1.15; // Increased pitch as requested
-            
-            const maleVoice = getMaleVoice();
-            if (maleVoice) {
-                utterance.voice = maleVoice;
-            }
-            
-            utterance.onend = () => { stopIntroSpeech(); };
-            utterance.onerror = () => { stopIntroSpeech(); };
-            
-            window.speechSynthesis.speak(utterance);
+        const playPromise = heroIntroVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                // Autoplay blocked by browser policy; fallback to muted loop until user gesture
+                heroIntroVideo.muted = true;
+                heroIntroVideo.play();
+            });
         }
     };
 
-    const toggleSpeech = () => {
-        if (isSpeaking) {
-            stopIntroSpeech();
+    const toggleVideoAudio = () => {
+        if (isPlaying) {
+            stopVideoAudio();
         } else {
-            startIntroSpeech();
+            heroIntroVideo.currentTime = 0;
+            startVideoAudio();
         }
     };
+
+    if (heroIntroVideo) {
+        heroIntroVideo.addEventListener('ended', () => {
+            stopVideoAudio();
+        });
+    }
 
     if (heroVoiceToggle) {
         heroVoiceToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleSpeech();
+            toggleVideoAudio();
         });
     }
 
@@ -227,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (introOverlay && !introOverlay.classList.contains('hide')) {
             introOverlay.classList.add('hide');
             setTimeout(() => {
-                startIntroSpeech();
+                startVideoAudio();
             }, 300);
         }
     };
@@ -247,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // User gesture fallback for strict browser autoplay rules
     const userGestureHandler = () => {
         dismissIntroOverlay();
+        startVideoAudio();
         document.removeEventListener('click', userGestureHandler);
         document.removeEventListener('keydown', userGestureHandler);
         document.removeEventListener('touchstart', userGestureHandler);
