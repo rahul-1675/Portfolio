@@ -123,44 +123,111 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       INTERACTIVE MUSIC PLAYER MOCKUP (Silent Visualizer)
+       INTERACTIVE VOICE SELF-INTRO & VISUALIZER
        ========================================================================== */
     const musicToggle = document.getElementById('music-toggle');
     const musicIcon = document.getElementById('music-icon');
+    const playIntroBtn = document.getElementById('play-intro-btn');
+    const playIntroIcon = document.getElementById('play-intro-icon');
     const visualizerBars = document.getElementById('visualizer-bars');
     const musicProgress = document.getElementById('music-progress');
     
-    let isPlaying = false;
+    let isSpeaking = false;
     let progressInterval = null;
     let currentProgress = 0;
     
-    if (musicToggle && musicIcon && visualizerBars && musicProgress) {
-        musicToggle.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            
-            if (isPlaying) {
-                // Play Action
-                musicIcon.classList.remove('fa-play');
-                musicIcon.classList.add('fa-pause');
-                visualizerBars.classList.add('playing');
-                
-                // Track simulator loop
-                progressInterval = setInterval(() => {
-                    currentProgress += 0.5;
-                    if (currentProgress > 100) {
-                        currentProgress = 0;
-                    }
-                    musicProgress.style.width = `${currentProgress}%`;
-                }, 100);
-            } else {
-                // Pause Action
-                musicIcon.classList.remove('fa-pause');
-                musicIcon.classList.add('fa-play');
-                visualizerBars.classList.remove('playing');
-                
-                clearInterval(progressInterval);
+    const selfIntroText = "Hi, I'm Bhavanam Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
+    
+    const stopIntroSpeech = () => {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        isSpeaking = false;
+        if (musicIcon) {
+            musicIcon.classList.remove('fa-pause');
+            musicIcon.classList.add('fa-play');
+        }
+        if (playIntroIcon) {
+            playIntroIcon.classList.remove('fa-pause');
+            playIntroIcon.classList.add('fa-play');
+        }
+        if (visualizerBars) {
+            visualizerBars.classList.remove('playing');
+        }
+        if (progressInterval) {
+            clearInterval(progressInterval);
+        }
+        currentProgress = 0;
+        if (musicProgress) {
+            musicProgress.style.width = '0%';
+        }
+    };
+    
+    const startIntroSpeech = () => {
+        if (isSpeaking) {
+            stopIntroSpeech();
+            return;
+        }
+        
+        stopIntroSpeech(); // Reset any ongoing speech
+        isSpeaking = true;
+        
+        if (musicIcon) {
+            musicIcon.classList.remove('fa-play');
+            musicIcon.classList.add('fa-pause');
+        }
+        if (playIntroIcon) {
+            playIntroIcon.classList.remove('fa-play');
+            playIntroIcon.classList.add('fa-pause');
+        }
+        if (visualizerBars) {
+            visualizerBars.classList.add('playing');
+        }
+        
+        // Progress bar simulation over ~12 seconds of speech
+        const totalDurationMs = 12000;
+        const intervalStepMs = 100;
+        const increment = (intervalStepMs / totalDurationMs) * 100;
+        
+        currentProgress = 0;
+        progressInterval = setInterval(() => {
+            currentProgress += increment;
+            if (currentProgress >= 100) {
+                currentProgress = 100;
             }
-        });
+            if (musicProgress) {
+                musicProgress.style.width = `${currentProgress}%`;
+            }
+        }, intervalStepMs);
+        
+        // Web Speech API Synthesis
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(selfIntroText);
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+            
+            utterance.onend = () => {
+                stopIntroSpeech();
+            };
+            
+            utterance.onerror = () => {
+                stopIntroSpeech();
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            // Fallback for browsers without SpeechSynthesis
+            setTimeout(() => {
+                stopIntroSpeech();
+            }, totalDurationMs);
+        }
+    };
+    
+    if (musicToggle) {
+        musicToggle.addEventListener('click', startIntroSpeech);
+    }
+    if (playIntroBtn) {
+        playIntroBtn.addEventListener('click', startIntroSpeech);
     }
 
     /* ==========================================================================

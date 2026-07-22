@@ -691,6 +691,45 @@ img {
 .music-visualizer.playing .bar:nth-child(4) { animation: playVisualizerShort 0.8s ease-in-out infinite 0.3s; }
 .music-visualizer.playing .bar:nth-child(5) { animation: playVisualizer 0.9s ease-in-out infinite 0.15s; }
 
+/* Floating PLAY INTRO Badge */
+.play-intro-pill {
+    position: absolute;
+    top: 25px;
+    right: -15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: var(--color-text-white);
+    background: rgba(13, 13, 17, 0.85);
+    border: 1px solid var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 0, 60, 0.25);
+    z-index: 25;
+    transition: var(--transition-fast);
+}
+
+.play-intro-pill:hover {
+    background-color: var(--color-primary);
+    box-shadow: 0 0 20px var(--color-primary-glow);
+    transform: scale(1.05);
+}
+
+.play-intro-pill i {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.play-intro-pill:hover i {
+    color: var(--color-text-white);
+}
+
 /* Responsive Hero */
 @media (max-width: 1024px) {
     .hero-container {
