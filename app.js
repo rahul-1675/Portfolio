@@ -123,12 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       AUTOMATIC MALE VOICE SELF-INTRO (AUTOPLAY ON OPEN / REFRESH)
+       PRELOADER INTRO CARD & AUTOMATIC VOICE SELF-INTRO
        ========================================================================== */
+    const introOverlay = document.getElementById('intro-overlay');
+    const introCard = document.getElementById('intro-card');
+    
     let isSpeaking = false;
     let autoplayTriggered = false;
     
-    // Spoken self intro with first name removed ("Hi, I'm Rahul...")
     const selfIntroText = "Hi, I'm Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
     
     // Select Male Voice
@@ -149,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return voices.find(v => v.lang.startsWith('en')) || voices[0];
     };
     
-    // Ensure voices are loaded (Chrome loads voices asynchronously)
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = () => {
             getMaleVoice();
@@ -164,14 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const startIntroSpeech = () => {
-        if (isSpeaking) {
-            return;
-        }
+        if (isSpeaking) return;
         
-        stopIntroSpeech(); // Reset any ongoing speech
+        stopIntroSpeech();
         isSpeaking = true;
         
-        // Web Speech API Synthesis with Male Voice & Increased Pitch
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(selfIntroText);
             utterance.rate = 1.0;
@@ -182,36 +180,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 utterance.voice = maleVoice;
             }
             
-            utterance.onend = () => {
-                stopIntroSpeech();
-            };
-            
-            utterance.onerror = () => {
-                stopIntroSpeech();
-            };
+            utterance.onend = () => { stopIntroSpeech(); };
+            utterance.onerror = () => { stopIntroSpeech(); };
             
             window.speechSynthesis.speak(utterance);
         }
     };
 
-    // Autoplay immediately on page load / refresh
-    const triggerAutoplayIntro = () => {
-        if (autoplayTriggered) return;
-        autoplayTriggered = true;
-        setTimeout(() => {
+    const dismissIntroOverlay = () => {
+        if (introOverlay && !introOverlay.classList.contains('hide')) {
+            introOverlay.classList.add('hide');
+            setTimeout(() => {
+                startIntroSpeech();
+            }, 300);
+        } else if (!isSpeaking) {
             startIntroSpeech();
-        }, 300);
+        }
     };
 
-    window.addEventListener('load', () => {
-        triggerAutoplayIntro();
-    });
+    // Auto-dismiss preloader card after 2.2 seconds & start intro speech
+    setTimeout(() => {
+        dismissIntroOverlay();
+    }, 2200);
 
-    // Browser Autoplay Fallback (triggers automatically on very first user interaction if browser blocked silent autoplay)
+    // Dismiss immediately if user clicks intro overlay or card
+    if (introOverlay) {
+        introOverlay.addEventListener('click', () => {
+            dismissIntroOverlay();
+        });
+    }
+
+    // User gesture fallback for strict browser autoplay rules
     const userGestureHandler = () => {
-        if (!isSpeaking && !autoplayTriggered) {
-            triggerAutoplayIntro();
-        }
+        dismissIntroOverlay();
         document.removeEventListener('click', userGestureHandler);
         document.removeEventListener('keydown', userGestureHandler);
         document.removeEventListener('touchstart', userGestureHandler);
