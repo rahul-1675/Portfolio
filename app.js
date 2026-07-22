@@ -123,76 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       PRELOADER INTRO CARD & CINEMATIC NATIVE VIDEO AUDIO CONTROLLER
+       PAGE LOAD INTRO NAME OVERLAY CONTROLLER
        ========================================================================== */
     const introOverlay = document.getElementById('intro-overlay');
-    const heroVoiceToggle = document.getElementById('hero-voice-toggle');
-    const heroVoiceIcon = document.getElementById('hero-voice-icon');
-    const heroIntroVideo = document.getElementById('hero-intro-video');
     
-    let isPlaying = false;
-    
-    const stopVideoAudio = () => {
-        if (heroIntroVideo) {
-            heroIntroVideo.pause();
-        }
-        isPlaying = false;
-        if (heroVoiceIcon) {
-            heroVoiceIcon.classList.remove('fa-pause');
-            heroVoiceIcon.classList.add('fa-play');
-        }
-    };
-    
-    const startVideoAudio = () => {
-        if (!heroIntroVideo) return;
-        
-        isPlaying = true;
-        heroIntroVideo.muted = false; // Enable video's built-in audio!
-        heroIntroVideo.volume = 1.0;
-        
-        if (heroVoiceIcon) {
-            heroVoiceIcon.classList.remove('fa-play');
-            heroVoiceIcon.classList.add('fa-pause');
-        }
-        
-        const playPromise = heroIntroVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                // Autoplay blocked by browser policy; fallback to muted loop until user gesture
-                heroIntroVideo.muted = true;
-                heroIntroVideo.play();
-            });
-        }
-    };
-
-    const toggleVideoAudio = () => {
-        if (isPlaying) {
-            stopVideoAudio();
-        } else {
-            heroIntroVideo.currentTime = 0;
-            startVideoAudio();
-        }
-    };
-
-    if (heroIntroVideo) {
-        heroIntroVideo.addEventListener('ended', () => {
-            stopVideoAudio();
-        });
-    }
-
-    if (heroVoiceToggle) {
-        heroVoiceToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleVideoAudio();
-        });
-    }
-
     const dismissIntroOverlay = () => {
         if (introOverlay && !introOverlay.classList.contains('hide')) {
             introOverlay.classList.add('hide');
-            setTimeout(() => {
-                startVideoAudio();
-            }, 300);
         }
     };
 
@@ -201,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dismissIntroOverlay();
     }, 3000);
 
-    // Also dismiss immediately if visitor clicks anywhere
+    // Also dismiss immediately if visitor clicks anywhere on overlay
     if (introOverlay) {
         introOverlay.addEventListener('click', () => {
             dismissIntroOverlay();
