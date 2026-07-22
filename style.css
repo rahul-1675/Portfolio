@@ -551,12 +551,12 @@ img {
 
 .profile-card {
     position: relative;
-    width: 380px;
-    height: 440px;
-    border-radius: 24px;
+    width: 400px;
+    height: 460px;
+    border-radius: 28px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255, 0, 60, 0.35);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(255, 0, 60, 0.25);
     background: var(--color-bg-dark);
 }
 
@@ -566,15 +566,27 @@ img {
     left: -20%;
     width: 140%;
     height: 140%;
-    background: radial-gradient(circle, rgba(255, 0, 60, 0.15) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(255, 0, 60, 0.25) 0%, transparent 60%);
     pointer-events: none;
+    z-index: 2;
+}
+
+.profile-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(7, 7, 9, 0.15) 0%, rgba(255, 0, 60, 0.12) 65%, rgba(7, 7, 9, 0.75) 100%);
+    pointer-events: none;
+    z-index: 3;
 }
 
 .profile-img, .profile-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: contrast(108%) brightness(95%);
+    filter: contrast(112%) brightness(92%) saturate(125%);
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;

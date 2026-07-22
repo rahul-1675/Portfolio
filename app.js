@@ -198,14 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const introEnterBtn = document.getElementById('intro-enter-btn');
 
-    // Auto-dismiss preloader card after 7 seconds to give ample time to read the name properly
+    // Display preloader overlay for a solid 8 seconds so visitors can read the name clearly
     const autoDismissTimeout = setTimeout(() => {
         dismissIntroOverlay();
-    }, 7000);
+    }, 8000);
 
-    // Dismiss immediately if user clicks intro overlay or enter button
+    // Dismiss only when user explicitly clicks the intro card or enter button
     if (introOverlay) {
-        introOverlay.addEventListener('click', () => {
+        introOverlay.addEventListener('click', (e) => {
             clearTimeout(autoDismissTimeout);
             dismissIntroOverlay();
         });
@@ -217,21 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
             dismissIntroOverlay();
         });
     }
-
-    // User gesture fallback for strict browser autoplay rules
-    const userGestureHandler = () => {
-        dismissIntroOverlay();
-        startVideoAudio();
-        document.removeEventListener('click', userGestureHandler);
-        document.removeEventListener('keydown', userGestureHandler);
-        document.removeEventListener('touchstart', userGestureHandler);
-        document.removeEventListener('scroll', userGestureHandler);
-    };
-
-    document.addEventListener('click', userGestureHandler);
-    document.addEventListener('keydown', userGestureHandler);
-    document.addEventListener('touchstart', userGestureHandler);
-    document.addEventListener('scroll', userGestureHandler);
 
     /* ==========================================================================
        MAGNETIC BUTTONS EFFECT
