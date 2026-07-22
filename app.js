@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       INTERACTIVE VOICE SELF-INTRO & VISUALIZER
+       INTERACTIVE VOICE SELF-INTRO & VISUALIZER (MALE VOICE & AUTOPLAY)
        ========================================================================== */
     const musicToggle = document.getElementById('music-toggle');
     const musicIcon = document.getElementById('music-icon');
@@ -135,8 +135,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSpeaking = false;
     let progressInterval = null;
     let currentProgress = 0;
+    let autoplayTriggered = false;
     
     const selfIntroText = "Hi, I'm Bhavanam Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
+    
+    // Select Male Voice
+    const getMaleVoice = () => {
+        if (!('speechSynthesis' in window)) return null;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return null;
+        
+        const maleKeywords = ['david', 'male', 'mark', 'george', 'alex', 'rishi', 'james', 'daniel', 'guy', 'steffan', 'google us english', 'microsoft david'];
+        for (const keyword of maleKeywords) {
+            const found = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes(keyword));
+            if (found) return found;
+        }
+        
+        const fallbackMale = voices.find(v => v.name.toLowerCase().includes('male'));
+        if (fallbackMale) return fallbackMale;
+        
+        return voices.find(v => v.lang.startsWith('en')) || voices[0];
+    };
+    
+    // Ensure voices are loaded (Chrome loads voices asynchronously)
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            getMaleVoice();
+        };
+    }
     
     const stopIntroSpeech = () => {
         if ('speechSynthesis' in window) {
@@ -200,11 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, intervalStepMs);
         
-        // Web Speech API Synthesis
+        // Web Speech API Synthesis with Male Voice
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(selfIntroText);
             utterance.rate = 0.95;
-            utterance.pitch = 1.0;
+            utterance.pitch = 0.95; // Slightly deeper pitch for natural male tone
+            
+            const maleVoice = getMaleVoice();
+            if (maleVoice) {
+                utterance.voice = maleVoice;
+            }
             
             utterance.onend = () => {
                 stopIntroSpeech();
@@ -229,6 +260,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playIntroBtn) {
         playIntroBtn.addEventListener('click', startIntroSpeech);
     }
+
+    // Autoplay on page load / refresh
+    const triggerAutoplayIntro = () => {
+        if (autoplayTriggered) return;
+        autoplayTriggered = true;
+        setTimeout(() => {
+            startIntroSpeech();
+        }, 500);
+    };
+
+    window.addEventListener('load', () => {
+        triggerAutoplayIntro();
+    });
+
+    // Browser Autoplay Fallback (if browser requires user interaction first)
+    const userGestureHandler = () => {
+        if (!isSpeaking && !autoplayTriggered) {
+            triggerAutoplayIntro();
+        }
+        document.removeEventListener('click', userGestureHandler);
+        document.removeEventListener('keydown', userGestureHandler);
+        document.removeEventListener('touchstart', userGestureHandler);
+    };
+
+    document.addEventListener('click', userGestureHandler);
+    document.addEventListener('keydown', userGestureHandler);
+    document.addEventListener('touchstart', userGestureHandler);
 
     /* ==========================================================================
        MAGNETIC BUTTONS EFFECT
