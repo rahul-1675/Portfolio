@@ -123,21 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       INTERACTIVE VOICE SELF-INTRO & VISUALIZER (MALE VOICE & AUTOPLAY)
+       AUTOMATIC MALE VOICE SELF-INTRO (AUTOPLAY ON OPEN / REFRESH)
        ========================================================================== */
-    const musicToggle = document.getElementById('music-toggle');
-    const musicIcon = document.getElementById('music-icon');
-    const playIntroBtn = document.getElementById('play-intro-btn');
-    const playIntroIcon = document.getElementById('play-intro-icon');
-    const visualizerBars = document.getElementById('visualizer-bars');
-    const musicProgress = document.getElementById('music-progress');
-    
     let isSpeaking = false;
-    let progressInterval = null;
-    let currentProgress = 0;
     let autoplayTriggered = false;
     
-    const selfIntroText = "Hi, I'm Bhavanam Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
+    // Spoken self intro with first name removed ("Hi, I'm Rahul...")
+    const selfIntroText = "Hi, I'm Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
     
     // Select Male Voice
     const getMaleVoice = () => {
@@ -169,68 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
             window.speechSynthesis.cancel();
         }
         isSpeaking = false;
-        if (musicIcon) {
-            musicIcon.classList.remove('fa-pause');
-            musicIcon.classList.add('fa-play');
-        }
-        if (playIntroIcon) {
-            playIntroIcon.classList.remove('fa-pause');
-            playIntroIcon.classList.add('fa-play');
-        }
-        if (visualizerBars) {
-            visualizerBars.classList.remove('playing');
-        }
-        if (progressInterval) {
-            clearInterval(progressInterval);
-        }
-        currentProgress = 0;
-        if (musicProgress) {
-            musicProgress.style.width = '0%';
-        }
     };
     
     const startIntroSpeech = () => {
         if (isSpeaking) {
-            stopIntroSpeech();
             return;
         }
         
         stopIntroSpeech(); // Reset any ongoing speech
         isSpeaking = true;
         
-        if (musicIcon) {
-            musicIcon.classList.remove('fa-play');
-            musicIcon.classList.add('fa-pause');
-        }
-        if (playIntroIcon) {
-            playIntroIcon.classList.remove('fa-play');
-            playIntroIcon.classList.add('fa-pause');
-        }
-        if (visualizerBars) {
-            visualizerBars.classList.add('playing');
-        }
-        
-        // Progress bar simulation over ~12 seconds of speech
-        const totalDurationMs = 12000;
-        const intervalStepMs = 100;
-        const increment = (intervalStepMs / totalDurationMs) * 100;
-        
-        currentProgress = 0;
-        progressInterval = setInterval(() => {
-            currentProgress += increment;
-            if (currentProgress >= 100) {
-                currentProgress = 100;
-            }
-            if (musicProgress) {
-                musicProgress.style.width = `${currentProgress}%`;
-            }
-        }, intervalStepMs);
-        
-        // Web Speech API Synthesis with Male Voice
+        // Web Speech API Synthesis with Male Voice & Increased Pitch
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(selfIntroText);
-            utterance.rate = 0.95;
-            utterance.pitch = 0.95; // Slightly deeper pitch for natural male tone
+            utterance.rate = 1.0;
+            utterance.pitch = 1.15; // Increased pitch as requested
             
             const maleVoice = getMaleVoice();
             if (maleVoice) {
@@ -246,35 +191,23 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             
             window.speechSynthesis.speak(utterance);
-        } else {
-            // Fallback for browsers without SpeechSynthesis
-            setTimeout(() => {
-                stopIntroSpeech();
-            }, totalDurationMs);
         }
     };
-    
-    if (musicToggle) {
-        musicToggle.addEventListener('click', startIntroSpeech);
-    }
-    if (playIntroBtn) {
-        playIntroBtn.addEventListener('click', startIntroSpeech);
-    }
 
-    // Autoplay on page load / refresh
+    // Autoplay immediately on page load / refresh
     const triggerAutoplayIntro = () => {
         if (autoplayTriggered) return;
         autoplayTriggered = true;
         setTimeout(() => {
             startIntroSpeech();
-        }, 500);
+        }, 300);
     };
 
     window.addEventListener('load', () => {
         triggerAutoplayIntro();
     });
 
-    // Browser Autoplay Fallback (if browser requires user interaction first)
+    // Browser Autoplay Fallback (triggers automatically on very first user interaction if browser blocked silent autoplay)
     const userGestureHandler = () => {
         if (!isSpeaking && !autoplayTriggered) {
             triggerAutoplayIntro();
@@ -282,11 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.removeEventListener('click', userGestureHandler);
         document.removeEventListener('keydown', userGestureHandler);
         document.removeEventListener('touchstart', userGestureHandler);
+        document.removeEventListener('scroll', userGestureHandler);
     };
 
     document.addEventListener('click', userGestureHandler);
     document.addEventListener('keydown', userGestureHandler);
     document.addEventListener('touchstart', userGestureHandler);
+    document.addEventListener('scroll', userGestureHandler);
 
     /* ==========================================================================
        MAGNETIC BUTTONS EFFECT
