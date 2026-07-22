@@ -196,14 +196,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Auto-dismiss preloader card after 4.5 seconds to give users full time to read the name properly
-    setTimeout(() => {
-        dismissIntroOverlay();
-    }, 4500);
+    const introEnterBtn = document.getElementById('intro-enter-btn');
 
-    // Dismiss immediately if user clicks intro overlay
+    // Auto-dismiss preloader card after 7 seconds to give ample time to read the name properly
+    const autoDismissTimeout = setTimeout(() => {
+        dismissIntroOverlay();
+    }, 7000);
+
+    // Dismiss immediately if user clicks intro overlay or enter button
     if (introOverlay) {
         introOverlay.addEventListener('click', () => {
+            clearTimeout(autoDismissTimeout);
+            dismissIntroOverlay();
+        });
+    }
+    if (introEnterBtn) {
+        introEnterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearTimeout(autoDismissTimeout);
             dismissIntroOverlay();
         });
     }

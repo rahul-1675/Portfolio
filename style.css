@@ -575,6 +575,9 @@ img {
     height: 100%;
     object-fit: cover;
     filter: contrast(108%) brightness(95%);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
     transition: var(--transition-slow);
 }
 
@@ -2121,6 +2124,29 @@ img {
     letter-spacing: 1px;
     color: rgba(255, 255, 255, 0.7);
     margin-top: 8px;
+}
+
+.intro-enter-btn {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-fast);
+}
+
+.intro-enter-btn:hover {
+    background: #ffffff;
+    color: var(--color-primary);
+    transform: scale(1.05);
 }
 
 .intro-subtitle {
