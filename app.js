@@ -123,11 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       PRELOADER INTRO CARD & AUTOMATIC VOICE SELF-INTRO
+       PRELOADER INTRO CARD & CINEMATIC VIDEO / VOICE CONTROLLER
        ========================================================================== */
     const introOverlay = document.getElementById('intro-overlay');
     const heroVoiceToggle = document.getElementById('hero-voice-toggle');
     const heroVoiceIcon = document.getElementById('hero-voice-icon');
+    const heroIntroVideo = document.getElementById('hero-intro-video');
     
     let isSpeaking = false;
     
@@ -166,6 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
             heroVoiceIcon.classList.remove('fa-pause');
             heroVoiceIcon.classList.add('fa-play');
         }
+        if (heroIntroVideo) {
+            heroIntroVideo.pause();
+        }
     };
     
     const startIntroSpeech = () => {
@@ -180,6 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (heroVoiceIcon) {
             heroVoiceIcon.classList.remove('fa-play');
             heroVoiceIcon.classList.add('fa-pause');
+        }
+        
+        if (heroIntroVideo) {
+            heroIntroVideo.currentTime = 0;
+            heroIntroVideo.play().catch(() => {});
         }
         
         if ('speechSynthesis' in window) {
@@ -223,10 +232,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Auto-dismiss preloader card after 2 seconds & start intro speech
+    // Auto-dismiss preloader card after 4.5 seconds to give users full time to read the name properly
     setTimeout(() => {
         dismissIntroOverlay();
-    }, 2000);
+    }, 4500);
 
     // Dismiss immediately if user clicks intro overlay
     if (introOverlay) {

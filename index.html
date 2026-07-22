@@ -28,7 +28,9 @@
         <div class="intro-card-wrapper" id="intro-card">
             <div class="intro-card-glow"></div>
             <div class="intro-card-content">
+                <span class="intro-welcome-text">WELCOME TO THE PORTFOLIO OF</span>
                 <h1 class="intro-name">Bhavanam Rahul</h1>
+                <span class="intro-tap-hint">Click anywhere to enter</span>
             </div>
         </div>
     </div>
@@ -107,12 +109,14 @@
                     </div>
                 </div>
 
-                <!-- Hero Image -->
+                <!-- Hero Video Player -->
                 <div class="hero-image-wrapper">
                     <div class="profile-card">
                         <div class="profile-glow"></div>
-                        <img src="assets/images/profile.jpg" alt="Rahul AI Avatar" class="profile-img">
-                        <button class="hero-play-icon-btn" id="hero-voice-toggle" aria-label="Play or stop voice intro">
+                        <video id="hero-intro-video" class="profile-video" playsinline loop poster="assets/images/profile.jpg">
+                            <source src="assets/intro_video.mp4" type="video/mp4">
+                        </video>
+                        <button class="hero-play-icon-btn" id="hero-voice-toggle" aria-label="Play or pause intro video">
                             <i class="fas fa-play" id="hero-voice-icon"></i>
                         </button>
                     </div>

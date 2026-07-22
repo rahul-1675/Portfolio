@@ -570,16 +570,16 @@ img {
     pointer-events: none;
 }
 
-.profile-img {
+.profile-img, .profile-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(10%) contrast(105%);
+    filter: contrast(108%) brightness(95%);
     transition: var(--transition-slow);
 }
 
-.profile-card:hover .profile-img {
-    transform: scale(1.05);
+.profile-card:hover .profile-img, .profile-card:hover .profile-video {
+    transform: scale(1.03);
 }
 
 /* Small Play Icon Button at bottom of profile card */
@@ -2102,7 +2102,25 @@ img {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 14px;
+}
+
+.intro-welcome-text {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.intro-tap-hint {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 8px;
 }
 
 .intro-subtitle {
