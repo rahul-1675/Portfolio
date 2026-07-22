@@ -196,12 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Display preloader overlay for 3.5 seconds on load/refresh so visitors can read the name clearly
+    // Display centered name for 3 seconds on page load/refresh, then automatically open the website
     setTimeout(() => {
         dismissIntroOverlay();
-    }, 3500);
+    }, 3000);
 
-    // Also dismiss if user clicks the intro card
+    // Also dismiss immediately if visitor clicks anywhere
     if (introOverlay) {
         introOverlay.addEventListener('click', () => {
             dismissIntroOverlay();

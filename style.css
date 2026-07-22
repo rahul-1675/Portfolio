@@ -2040,7 +2040,7 @@ img {
 }
 
 /* ==========================================================================
-   INTRO OVERLAY & PRELOADER CARD (Matching reference video 00:00-00:02)
+   PAGE LOAD INTRO NAME OVERLAY
    ========================================================================== */
 .intro-overlay {
     position: fixed;
@@ -2048,13 +2048,12 @@ img {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #050507;
+    background-color: var(--color-bg-darkest);
     z-index: 10000;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 50px 20px;
+    justify-content: center;
+    padding: 20px;
     opacity: 1;
     transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
     overflow: hidden;
@@ -2062,103 +2061,33 @@ img {
 
 .intro-overlay.hide {
     opacity: 0;
-    transform: scale(1.1);
+    transform: scale(1.08);
     pointer-events: none;
 }
 
-.intro-top-tagline {
+.intro-centered-name {
     font-family: var(--font-heading);
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--color-text-white);
-    letter-spacing: 0.5px;
+    font-weight: 900;
+    font-size: 5rem;
+    line-height: 1.1;
+    letter-spacing: -2px;
     text-align: center;
-    margin-top: 10px;
-    animation: fadeInDown 0.8s ease forwards;
+    background: linear-gradient(135deg, var(--color-text-white) 40%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: nameZoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    filter: drop-shadow(0 0 35px rgba(255, 0, 60, 0.4));
 }
 
-.intro-card-wrapper {
-    position: relative;
-    width: 90%;
-    max-width: 580px;
-    height: 360px;
-    background: linear-gradient(135deg, #ff003c 0%, #a10025 100%);
-    border-radius: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 20px 60px rgba(255, 0, 60, 0.4), 0 0 100px rgba(255, 0, 60, 0.2);
-    animation: cardScaleIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform 0.3s ease;
+@keyframes nameZoomIn {
+    0% { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
 }
 
-.intro-card-wrapper:hover {
-    transform: scale(1.03);
-}
-
-.intro-card-glow {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
-    animation: rotateGlow 8s linear infinite;
-}
-
-.intro-card-content {
-    position: relative;
-    z-index: 5;
-    text-align: center;
-    color: #ffffff;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-}
-
-.intro-welcome-text {
-    font-family: var(--font-heading);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.intro-tap-hint {
-    font-family: var(--font-heading);
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 8px;
-}
-
-.intro-enter-btn {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: #ffffff;
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 10px 24px;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-top: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition-fast);
-}
-
-.intro-enter-btn:hover {
-    background: #ffffff;
-    color: var(--color-primary);
-    transform: scale(1.05);
+@media (max-width: 768px) {
+    .intro-centered-name {
+        font-size: 3.2rem;
+    }
 }
 
 .intro-subtitle {
