@@ -126,10 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
        PRELOADER INTRO CARD & AUTOMATIC VOICE SELF-INTRO
        ========================================================================== */
     const introOverlay = document.getElementById('intro-overlay');
-    const introCard = document.getElementById('intro-card');
+    const heroVoiceToggle = document.getElementById('hero-voice-toggle');
+    const heroVoiceIcon = document.getElementById('hero-voice-icon');
     
     let isSpeaking = false;
-    let autoplayTriggered = false;
     
     const selfIntroText = "Hi, I'm Rahul. I'm an Artificial Intelligence and Machine Learning student, as well as a full-stack developer. I build fast, scalable applications using Python, Java, Spring Boot, SQL, and modern web technologies. Welcome to my portfolio!";
     
@@ -162,13 +162,25 @@ document.addEventListener('DOMContentLoaded', () => {
             window.speechSynthesis.cancel();
         }
         isSpeaking = false;
+        if (heroVoiceIcon) {
+            heroVoiceIcon.classList.remove('fa-pause');
+            heroVoiceIcon.classList.add('fa-play');
+        }
     };
     
     const startIntroSpeech = () => {
-        if (isSpeaking) return;
+        if (isSpeaking) {
+            stopIntroSpeech();
+            return;
+        }
         
         stopIntroSpeech();
         isSpeaking = true;
+        
+        if (heroVoiceIcon) {
+            heroVoiceIcon.classList.remove('fa-play');
+            heroVoiceIcon.classList.add('fa-pause');
+        }
         
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(selfIntroText);
@@ -187,23 +199,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const toggleSpeech = () => {
+        if (isSpeaking) {
+            stopIntroSpeech();
+        } else {
+            startIntroSpeech();
+        }
+    };
+
+    if (heroVoiceToggle) {
+        heroVoiceToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSpeech();
+        });
+    }
+
     const dismissIntroOverlay = () => {
         if (introOverlay && !introOverlay.classList.contains('hide')) {
             introOverlay.classList.add('hide');
             setTimeout(() => {
                 startIntroSpeech();
             }, 300);
-        } else if (!isSpeaking) {
-            startIntroSpeech();
         }
     };
 
-    // Auto-dismiss preloader card after 2.2 seconds & start intro speech
+    // Auto-dismiss preloader card after 2 seconds & start intro speech
     setTimeout(() => {
         dismissIntroOverlay();
-    }, 2200);
+    }, 2000);
 
-    // Dismiss immediately if user clicks intro overlay or card
+    // Dismiss immediately if user clicks intro overlay
     if (introOverlay) {
         introOverlay.addEventListener('click', () => {
             dismissIntroOverlay();
